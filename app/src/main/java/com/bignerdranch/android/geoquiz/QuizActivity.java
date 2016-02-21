@@ -144,6 +144,7 @@ public class QuizActivity extends AppCompatActivity {
                 mCurrentIndex = (mCurrentIndex + mQuestionBank.length -1) % mQuestionBank.length;
                 mIsCheater = false;
                 updateQuestion();
+                
             }
         });
 
