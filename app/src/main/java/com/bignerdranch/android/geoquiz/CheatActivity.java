@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,7 +17,11 @@ public class CheatActivity extends AppCompatActivity {
     private boolean mAnswerIsTrue;
     private TextView mAnswerTextview;
     private Button mShowButton;
+    private Boolean mCaughtYou = false;
 
+    private static final String  DID_CHEAT = "cheating";
+
+    private static final String TAG = "CheatActivity";
     private static final String EXTRA_ANSWER_IS_TRUE = "com.bignerdranch.android.geoquiz.answer_is_true";
     private static final String EXTRA_ANSWER_SHOWN = "com.bignerdranch.android.geoquiz.answer_shown";
 
@@ -48,15 +53,29 @@ public class CheatActivity extends AppCompatActivity {
                 } else {
                     mAnswerTextview.setText(R.string.false_button);
                 }
+                mCaughtYou = true;
                 setAnswerShownResult(true);
+
             }
         });
+        if (savedInstanceState != null){
+            mCaughtYou = savedInstanceState.getBoolean(DID_CHEAT,false);
+        }
+        setAnswerShownResult(mCaughtYou);
 
     }
     private void setAnswerShownResult(boolean isAnswerShown){
         Intent data = new Intent();
         data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
         setResult(RESULT_OK, data);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putBoolean(DID_CHEAT, mCaughtYou);
+
     }
 
 }
