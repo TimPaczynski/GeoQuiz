@@ -7,10 +7,14 @@ package com.bignerdranch.android.geoquiz;
 public class Question {
     private int mTextResId;
     private boolean mAnswerTrue;
+    private boolean mDidCheat;
 
-    public Question (int textResId, boolean answerTrue) {
+
+    public Question (int textResId, boolean answerTrue, boolean DidCheat) {
         mTextResId = textResId;
         mAnswerTrue = answerTrue;
+        mDidCheat = DidCheat;
+
 
 
     }
@@ -30,6 +34,14 @@ public class Question {
 
     public int getTextResId() {
         return mTextResId;
+    }
+
+    public boolean isDidCheat() {
+        return mDidCheat;
+    }
+
+    public void setDidCheat(boolean didCheat) {
+        mDidCheat = didCheat;
     }
 
 

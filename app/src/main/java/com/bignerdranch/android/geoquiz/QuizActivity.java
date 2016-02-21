@@ -25,6 +25,18 @@ public class QuizActivity extends AppCompatActivity {
 
 
     private static final String CHEATER = "cheater";
+    private static final String Q1 = "question1";
+    private static final String Q2 = "question2";
+    private static final String Q3 = "question3";
+    private static final String Q4 = "question4";
+    private static final String Q5 = "question5";
+
+    private boolean question_was_cheated_on1;
+    private boolean question_was_cheated_on2;
+    private boolean question_was_cheated_on3;
+    private boolean question_was_cheated_on4;
+    private boolean question_was_cheated_on5;
+
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "key_index";
@@ -37,11 +49,11 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[] {
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_asia, true),
+            new Question(R.string.question_africa, false, false),
+            new Question(R.string.question_mideast, false, false),
+            new Question(R.string.question_americas, true, false),
+            new Question(R.string.question_oceans, true, false),
+            new Question(R.string.question_asia, true, false),
     };
     private int mCurrentIndex = 0;
     private boolean mIsCheater;
@@ -55,7 +67,7 @@ public class QuizActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
 
         int messageResId = 0;
-        if (mIsCheater){
+        if (mIsCheater || mQuestionBank[mCurrentIndex].isDidCheat()){
             messageResId =R.string.judgement_toast;
         }
         else{
@@ -131,6 +143,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex +1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -144,7 +157,7 @@ public class QuizActivity extends AppCompatActivity {
                 mCurrentIndex = (mCurrentIndex + mQuestionBank.length -1) % mQuestionBank.length;
                 mIsCheater = false;
                 updateQuestion();
-                
+
             }
         });
 
@@ -153,6 +166,16 @@ public class QuizActivity extends AppCompatActivity {
         }
         if (savedInstanceState != null) {
             mIsCheater = savedInstanceState.getBoolean(CHEATER, false);
+            question_was_cheated_on1 = savedInstanceState.getBoolean(Q1, false);
+            question_was_cheated_on2 = savedInstanceState.getBoolean(Q2, false);
+            question_was_cheated_on3 = savedInstanceState.getBoolean(Q3, false);
+            question_was_cheated_on4 = savedInstanceState.getBoolean(Q4, false);
+            question_was_cheated_on5 = savedInstanceState.getBoolean(Q5, false);
+            mQuestionBank[0].setDidCheat(question_was_cheated_on1);
+            mQuestionBank[1].setDidCheat(question_was_cheated_on2);
+            mQuestionBank[2].setDidCheat(question_was_cheated_on3);
+            mQuestionBank[3].setDidCheat(question_was_cheated_on4);
+            mQuestionBank[4].setDidCheat(question_was_cheated_on5);
         }
             updateQuestion();
 
@@ -167,6 +190,9 @@ public class QuizActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            if (mIsCheater){
+                mQuestionBank[mCurrentIndex].setDidCheat(true);
+            }
 
         }
     }
@@ -176,6 +202,11 @@ public class QuizActivity extends AppCompatActivity {
         Log.i(TAG, "onSaveInstancceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
         savedInstanceState.putBoolean(CHEATER ,mIsCheater);
+        savedInstanceState.putBoolean(Q1, mQuestionBank[0].isDidCheat());
+        savedInstanceState.putBoolean(Q2, mQuestionBank[1].isDidCheat());
+        savedInstanceState.putBoolean(Q3, mQuestionBank[2].isDidCheat());
+        savedInstanceState.putBoolean(Q4, mQuestionBank[3].isDidCheat());
+        savedInstanceState.putBoolean(Q5, mQuestionBank[4].isDidCheat());
     }
     @Override
     public void onStart() {
